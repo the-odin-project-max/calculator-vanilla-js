@@ -32,20 +32,23 @@ document.getElementsByClassName("btn clear")[0].addEventListener("click", functi
 	result.innerHTML = "0";
 });
 
-document.getElementsByClassName("btn delete")[0].addEventListener("click", function () {
+document.getElementsByClassName("btn delete")[0].addEventListener("click", deleteLastCharacterInEquation);
+function deleteLastCharacterInEquation() {
 	var equation = document.getElementById("equation");
 	equation.innerHTML = equation.innerHTML.slice(0, -1);
 	if (equation.innerHTML == "") {
 		equation.innerHTML = "0";
 	}
-});
+}
 
-document.getElementsByClassName("btn equal")[0].addEventListener("click", function () {
+document.getElementsByClassName("btn equal")[0].addEventListener("click", calculateResult);
+
+function calculateResult() {
 	var equation = document.getElementById("equation");
 	var result = document.getElementById("result");
 	result.innerHTML = evaluateStringAsMathematicalExpression(equation.innerHTML);
 	equation.innerHTML = "0";
-});
+}
 
 // Evaluate string as mathematical expression
 function evaluateStringAsMathematicalExpression(string) {
@@ -68,3 +71,31 @@ function evaluateStringAsMathematicalExpression(string) {
 	}
 	return result;
 };
+
+window.addEventListener("keydown", insertFromKeyboard, false);
+function insertFromKeyboard(evt) {
+	const key = evt.key;
+	const authorizedInputs = "0123456789+-*/^.";
+	console.log(key);
+	if (key == "Enter") {
+		calculateResult();
+		return;
+	}
+
+	if (key == "Backspace") {
+		deleteLastCharacterInEquation();
+		return;
+	}
+
+	if(key == "Dead"){
+		insertStringInEquation("^");
+		return;
+	}
+
+	if (!authorizedInputs.includes(key)) {
+		console.log("unauthorized input");
+		evt.preventDefault();
+		return;
+	}
+	insertStringInEquation(key);
+}
